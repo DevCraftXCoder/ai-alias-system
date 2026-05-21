@@ -1,0 +1,16 @@
+{
+  "_comment": "Add these sections to your .claude/settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(npm:*)",
+      "Bash(pnpm:*)",
+      "Bash(git:status)",
+      "Bash(git:diff)",
+      "Bash(git:log)"
+    ],
+    "deny": []
+  },
+  "env": {
+    "_comment": "Add project-specific env vars here if needed"
+  }
+}

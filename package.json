@@ -1,0 +1,45 @@
+{
+  "name": "ai-alias-system",
+  "version": "1.0.0",
+  "description": "Symbol-shorthand alias system for Claude Code, Codex CLI, and Gemini CLI — install shared project vocabulary in seconds",
+  "keywords": [
+    "claude-code",
+    "codex",
+    "gemini",
+    "ai",
+    "aliases",
+    "productivity",
+    "developer-tools",
+    "cli"
+  ],
+  "homepage": "https://github.com/DevCraftXCoder/ai-alias-system#readme",
+  "bugs": {
+    "url": "https://github.com/DevCraftXCoder/ai-alias-system/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DevCraftXCoder/ai-alias-system.git"
+  },
+  "license": "MIT",
+  "author": "DevCraftXCoder",
+  "type": "commonjs",
+  "bin": {
+    "ai-alias-system": "./bin/ai-aliases.js",
+    "aias": "./bin/ai-aliases.js"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "templates/",
+    "docs/",
+    "install/"
+  ],
+  "scripts": {
+    "test": "node --test src/__tests__/*.js",
+    "lint": "node --check bin/ai-aliases.js src/*.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "packageManager": "pnpm@9.0.0"
+}
