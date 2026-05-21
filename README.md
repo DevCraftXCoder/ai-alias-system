@@ -19,11 +19,11 @@ Works with **Claude Code**, **OpenAI Codex CLI**, and **Google Gemini CLI**.
 Every AI coding session starts with the same re-explanation:
 
 ```
-"In the packages/underground-api package — that's the Hono CF Worker backend,
-TypeScript, deployed on Cloudflare Workers with D1 as the database..."
+"In the packages/api package — that's the Hono backend, TypeScript,
+deployed on Cloudflare Workers with D1 as the database..."
 ```
 
-You repeat this dozens of times per week. The AI forgets between sessions. You re-type the same context constantly.
+You repeat this dozens of times per week. The AI forgets between sessions.
 
 The alias system fixes this once.
 
@@ -34,7 +34,7 @@ The alias system fixes this once.
 Define a vocabulary once. Use compact symbols in every prompt from then on.
 
 ```
-In @UndergroundAPI #Auth, there's a bug with JWT refresh token rotation hitting %D1.
+In @API #Auth, there's a bug with JWT refresh token rotation hitting %DB.
 ```
 
 The AI already knows what each symbol means — no re-explanation needed.
@@ -45,12 +45,12 @@ The AI already knows what each symbol means — no re-explanation needed.
 
 | Symbol | Meaning | Example |
 |--------|---------|---------|
-| `@` | Project / repository / sub-package | `@UndergroundAPI`, `@SIC`, `@Finos` |
-| `$` | External service / third-party API | `$Cloudflare`, `$Stripe`, `$Anthropic` |
+| `@` | Project / repository / sub-package | `@API`, `@Web`, `@MobileApp` |
+| `$` | External service / third-party API | `$Stripe`, `$Supabase`, `$GitHub` |
 | `#` | Topic / workstream / feature area | `#Auth`, `#Feed`, `#Payments` |
 | `&` | Team / role / responsibility domain | `&Backend`, `&Design`, `&Infra` |
-| `%` | Asset / resource / data store | `%R2`, `%D1`, `%Redis` |
-| `~` | Agent / bot / automated system | `~ImplExpert`, `~QAAgent` |
+| `%` | Asset / resource / data store | `%DB`, `%S3`, `%Redis` |
+| `~` | Agent / bot / automated system | `~DeployBot`, `~ReviewBot` |
 
 ---
 
@@ -113,151 +113,88 @@ aias status
 
 Run `pnpm dlx ai-alias-system init` to get an interactive wizard, or edit the generated table directly.
 
-### Example — Monorepo (multiple sub-packages)
+### Monorepo
 
 ```markdown
 ## @ Projects
 
-| Alias            | Repo / Path               | Description                              |
-|------------------|---------------------------|------------------------------------------|
-| @App             | (root)                    | Main monorepo                            |
-| @API             | packages/api/             | Hono CF Worker — all backend routes      |
-| @Web             | packages/web/             | Next.js 15 frontend                      |
-| @Desktop         | packages/desktop/         | Tauri 2.x desktop app                   |
+| Alias    | Repo / Path         | Description                    |
+|----------|---------------------|--------------------------------|
+| @App     | (root)              | Main monorepo                  |
+| @API     | packages/api/       | Express / Hono backend         |
+| @Web     | packages/web/       | Next.js frontend               |
+| @Mobile  | packages/mobile/    | React Native app               |
+| @Workers | packages/workers/   | Background job processors      |
 
 ## $ External Services
 
-| Alias       | Service    | Notes                              |
-|-------------|------------|------------------------------------|
-| $Cloudflare | Cloudflare | Workers, D1, R2, KV, Durable Obj   |
-| $Stripe     | Stripe     | Subscriptions, checkout, webhooks  |
-| $Anthropic  | Anthropic  | Claude API — claude-opus-4-7       |
+| Alias     | Service    | Notes                              |
+|-----------|------------|------------------------------------|
+| $Stripe   | Stripe     | Subscriptions, checkout, webhooks  |
+| $Supabase | Supabase   | Database + Auth                    |
+| $SendGrid | SendGrid   | Transactional email                |
 
 ## # Topics
 
-| Alias     | Scope                                      |
-|-----------|--------------------------------------------|
-| #Auth     | JWT, OAuth, token rotation, session mgmt   |
-| #Feed     | Timeline, pagination, recommendations      |
-| #Payments | Stripe subscriptions, checkout flows       |
+| Alias      | Scope                                  |
+|------------|----------------------------------------|
+| #Auth      | Login, JWT, OAuth, session management  |
+| #Billing   | Stripe subscriptions, invoices, tiers  |
+| #Onboarding| Signup flow, email verify, first login |
+| #Feed      | Timeline, pagination, recommendations  |
 
 ## % Assets / Resources
 
-| Alias | Location              |
-|-------|-----------------------|
-| %D1   | Cloudflare D1 (SQLite)|
-| %R2   | Cloudflare R2 storage |
-| %KV   | Cloudflare Workers KV |
+| Alias  | Location                  |
+|--------|---------------------------|
+| %DB    | Primary database (Postgres)|
+| %Cache | Redis / Upstash            |
+| %S3    | File storage (S3 / R2)     |
 ```
 
-Then use it:
-
-```
-Fix the 401 in @API #Auth — the JWT middleware isn't passing userId to route handlers.
-
-Optimize the @Web #Feed query — cursor pagination hits %D1 too slowly at scale.
-
-Stripe $Stripe webhook isn't updating the @API #Payments tier on subscription renewal.
-```
-
-### Example — Single repo
+### Single repo
 
 ```markdown
 ## @ Projects
 
-| Alias | Repo / Path | Description  |
-|-------|-------------|--------------|
-| @App  | (root)      | This project |
+| Alias | Repo / Path | Description   |
+|-------|-------------|---------------|
+| @App  | (root)      | This project  |
 
 ## $ External Services
 
-| Alias    | Service  | Notes           |
-|----------|----------|-----------------|
-| $Supabase| Supabase | DB + Auth        |
-| $Vercel  | Vercel   | Deploy + preview |
+| Alias     | Service   | Notes              |
+|-----------|-----------|--------------------|
+| $Stripe   | Stripe    | Payments           |
+| $Supabase | Supabase  | Database + Auth    |
 
 ## # Topics
 
-| Alias    | Scope              |
-|----------|--------------------|
-| #Auth    | Supabase auth flow |
-| #API     | Route handlers     |
+| Alias  | Scope            |
+|--------|------------------|
+| #Auth  | Auth flows       |
+| #Billing | Stripe billing |
 ```
 
 ---
 
-## Real-World Example
+## Before and After
 
-Here's a real alias table from a production monorepo — [Underground Social](https://github.com/DevCraftXCoder/Underground-Social), a social music platform for independent artists:
-
-```markdown
-## @ Projects
-
-| Alias            | Path                          | Description                              |
-|------------------|-------------------------------|------------------------------------------|
-| @App             | (root)                        | Main monorepo — C:/Za                   |
-| @UndergroundAPI  | packages/underground-api/     | Hono CF Worker — 150+ API routes         |
-| @FrxncoisLanding | francois-landing/             | Next.js 15 landing + admin dashboard     |
-| @EvBettaWorker   | EV Betta/ev-betta-worker/     | Sports picks CF Worker                   |
-| @EvBettaScraper  | EV Betta/ev-betta-scraper/    | PM2 TypeScript odds scraper              |
-| @SIC             | sic/                          | AI pentesting MCP framework (150+ tools) |
-| @Finos           | packages/finos/apps/web/      | AI Financial OS — Next.js 15             |
-| @MizzyTools      | mizzy-tools/                  | Self-hosted creator dashboard            |
-| @SSO             | packages/sso/                 | FastAPI + PostgreSQL OAuth 2.0 server    |
-
-## $ External Services
-
-| Alias       | Service    | Notes                                    |
-|-------------|------------|------------------------------------------|
-| $Cloudflare | Cloudflare | Workers, D1, R2, KV, Durable Objects     |
-| $Stripe     | Stripe     | Underground+ subscriptions + webhooks    |
-| $Anthropic  | Anthropic  | claude-opus-4-7, claude-sonnet-4-6       |
-| $Ollama     | Ollama     | Local LLM — qwen3:14b, offline fallback  |
-| $Discord    | Discord    | Webhook alerts, gateway bot              |
-
-## # Topics
-
-| Alias    | Scope                                         |
-|----------|-----------------------------------------------|
-| #Auth    | JWT, OAuth (Google/Discord), token rotation   |
-| #Feed    | Following feed, all tracks, cursor pagination |
-| #Sports  | EV Betta odds scraper, picks engine, EV calc  |
-| #Music   | Underground tracks, playlists, HLS streaming  |
-| #Payments| Stripe subscriptions, tiers, webhooks         |
-| #Deploy  | wrangler, CF Workers deploy, PM2              |
-| #Security| SIC, pentesting, OWASP, auth hardening        |
-
-## % Assets / Resources
-
-| Alias      | Location                                  |
-|------------|-------------------------------------------|
-| %D1        | Cloudflare D1 — all relational data       |
-| %R2        | Cloudflare R2 — audio, covers, HLS, backups|
-| %DO        | Durable Objects — WebSocket DM rooms      |
-| %MemoryMCP | https://frxncois-memory.frxncois.workers.dev|
-
-## ~ Agents
-
-| Alias          | Agent Type             | Domain                      |
-|----------------|------------------------|-----------------------------|
-| ~ImplExpert    | implementation-expert  | TS/Python feature dev        |
-| ~FrontendExpert| frontend-expert        | Next.js 15, admin UI         |
-| ~QAAgent       | qa-agent               | tsc, ruff, build, smoke tests|
-| ~MasterAuditor | master-auditor         | Full DFE codebase audit      |
-```
-
-**In use:**
+**Without aliases:**
 
 ```
-# Without aliases
-"In the packages/underground-api Hono CF Worker backend, in the auth route file,
-there's a bug with how the JWT refresh token rotation interacts with Cloudflare D1..."
-
-# With aliases
-"In @UndergroundAPI #Auth, JWT refresh rotation is broken hitting %D1."
+In the packages/api Express backend, in the authentication middleware file,
+there's a bug with how the JWT refresh token rotation interacts with the
+Redis session store when a user has multiple active devices...
 ```
 
-Same information. 70% fewer words. No ambiguity.
+**With aliases:**
+
+```
+In @API #Auth, JWT refresh rotation breaks when a user has multiple devices hitting %Cache.
+```
+
+Same information. 60% fewer words. No ambiguity.
 
 ---
 
@@ -265,29 +202,29 @@ Same information. 70% fewer words. No ambiguity.
 
 ```
 # Bug fix
-@UndergroundAPI #Auth — 401 on token refresh, userId not propagating to handlers.
+@API #Auth — 401 on token refresh, userId not propagating to route handlers.
 
 # Feature work
-Add cursor pagination to @Finos #Feed — use %D1, pattern matches @UndergroundAPI.
+Add cursor pagination to @Web #Feed — use %DB, match the pattern from @API.
 
 # Cross-service
-$Stripe webhook isn't syncing tier to @UndergroundAPI #Payments after subscription renewal.
-
-# Agent dispatch
-Spawn ~ImplExpert to fix @EvBettaWorker #Sports — picks sync is silently deleting rows.
+$Stripe webhook isn't syncing subscription tier to @API #Billing after renewal.
 
 # Multi-repo
-@FrxncoisLanding admin tab needs to query @UndergroundAPI /api/admin/stats — add the route.
+@Web needs to call @API /api/admin/stats — add the route on both sides.
 
 # Deploy
-Deploy @EvBettaWorker after #Sports fix — run wrangler deploy on ev-betta-worker.
+After fixing @API #Auth, deploy the worker — run build + push to prod.
+
+# Team routing
+Assign @Mobile #Auth to &MobileTeam, @API #Auth to &Backend.
 ```
 
 ---
 
 ## Why Symbols?
 
-**Compact** — `@UndergroundAPI` vs `the packages/underground-api Hono CF Worker backend deployed on Cloudflare Workers`
+**Compact** — `@API` vs `the packages/api Express backend deployed on...`
 
 **Unambiguous** — symbols don't appear in natural language, so they stand out as references
 
@@ -295,7 +232,7 @@ Deploy @EvBettaWorker after #Sports fix — run wrangler deploy on ev-betta-work
 
 **Learnable** — the AI learns your symbols from the table once per session; you never re-explain
 
-**Grep-able** — `grep -r "@UndergroundAPI"` across your prompt history finds every relevant conversation
+**Grep-able** — `grep -r "@API"` across your conversation history finds every relevant session
 
 ---
 
