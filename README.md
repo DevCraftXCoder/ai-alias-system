@@ -4,7 +4,6 @@
 
 **Symbol-shorthand notation for directing AI coding assistants with compact project context.**
 
-[![npm](https://img.shields.io/npm/v/ai-alias-system?color=CB3837&logo=npm)](https://www.npmjs.com/package/ai-alias-system)
 [![pnpm](https://img.shields.io/badge/pnpm-dlx-F69220?logo=pnpm&logoColor=white)](https://pnpm.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -71,12 +70,6 @@ pnpm dlx ai-alias-system install gemini
 
 # Interactive wizard — walks you through creating your alias table
 pnpm dlx ai-alias-system init
-```
-
-Or with npm:
-
-```bash
-npx ai-alias-system install
 ```
 
 Or install globally:
